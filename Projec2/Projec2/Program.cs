@@ -25,6 +25,14 @@ namespace Projec2
 
                 switch (UserAnswer)
                 {
+                    case "1":
+                        AddGradesToEmployeeFromConsole(true);
+                        break;
+
+                    case "2":
+                        AddGradesToEmployeeFromConsole(false);
+                        break;
+
                     case "X":
                         StudentsGradingSystemApp = true;
                         break;
@@ -33,6 +41,29 @@ namespace Projec2
                         WritelineColorAndText(ConsoleColor.White, "Invalid operation.\n");
                         continue;
                 }
+            }
+        }
+
+        static void OnGradeUnder3(object sender, EventArgs args)
+        {
+            WritelineColorAndText(ConsoleColor.DarkYellow, $"Oh no! Student got grade under 3. We should inform student’s parents about this fact!");
+        }
+
+        private static void AddGradesToEmployeeFromConsole(bool isInMemory)
+        {
+            string firstName = GetValueFromUserInput("Please enter student's first name: ");
+            string lastName = GetValueFromUserInput("Please enter student's last name: ");
+            if (!string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName))
+            {
+
+                IStudent student = isInMemory ? new StudentInMemory(firstName, lastName) : new StudentSaved(firstName, lastName);
+                student.GradeUnder3 += OnGradeUnder3;
+                EnterGrade(student);
+                student.ShowStatistics();
+            }
+            else
+            {
+                WritelineColorAndText(ConsoleColor.Red, "Student's firstname and lastname can not be empty!");
             }
         }
 
