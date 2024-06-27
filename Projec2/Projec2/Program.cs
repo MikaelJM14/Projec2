@@ -56,7 +56,7 @@ namespace Projec2
             if (!string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName))
             {
 
-                IStudent student = isInMemory ? new StudentInMemory(firstName, lastName) : new StudentSaved(firstName, lastName);
+                IStudent student = isInMemory ? new StudentInMermory(firstName, lastName) : new StudentSaved(firstName, lastName);
                 student.GradeUnder3 += OnGradeUnder3;
                 EnterGrade(student);
                 student.ShowStatistics();
@@ -65,6 +65,47 @@ namespace Projec2
             {
                 WritelineColorAndText(ConsoleColor.Red, "Student's firstname and lastname can not be empty!");
             }
+        }
+
+        private static void EnterGrade(IStudent student)
+        {
+            while (true)
+            {
+                WritelineColor(ConsoleColor.Yellow, $"Enter grade for {student.FirstName} {student.LastName}:");
+                var input = Console.ReadLine();
+
+                if (input == "q" || input == "Q")
+                {
+                    break;
+                }
+                try
+                {
+                    student.AddGrade(input);
+                }
+                catch (FormatException ex)
+                {
+                    WritelineColor(ConsoleColor.White, ex.Message);
+                }
+                catch (ArgumentException ex)
+                {
+                    WritelineColor(ConsoleColor.White, ex.Message);
+                }
+                catch (NullReferenceException ex)
+                {
+                    WritelineColor(ConsoleColor.White, ex.Message);
+                }
+                finally
+                {
+                    WritelineColor(ConsoleColor.DarkMagenta, $"To leave and show {student.FirstName} {student.LastName} statistics enter 'q'.");
+                }
+            }
+        }
+
+        private static void WritelineColor(ConsoleColor color, string text)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(text);
+            Console.ResetColor();
         }
 
         private static void WritelineColorAndText(ConsoleColor color, string text)
